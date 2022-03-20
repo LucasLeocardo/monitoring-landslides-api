@@ -2,7 +2,7 @@
   "name": "monitoring-landslides-api",
   "version": "1.0.0",
   "description": "API for managing data related to slopes at risk of landslides.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./server.js"
@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/LucasLeocardo/monitoring-landslides-api#readme",
   "dependencies": {
+    "body-parser": "^1.19.2",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mongoose": "^6.2.4"

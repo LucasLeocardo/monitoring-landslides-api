@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
-const Device = mongoose.model('Devices', {
+const User = mongoose.model('Users', {
     name: String,
+    email: String,
     created_at: { type: Date, default: Date.now }
 });
 
-module.exports = Device;
+module.exports = User;
