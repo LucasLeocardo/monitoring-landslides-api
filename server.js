@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const InvalidField = require('./errorTreatment/InvalidField');
+const InvalidArgumentError = require('./errorTreatment/InvalidArgumentError');
 require('dotenv').config();
 
 const app = express();
@@ -13,7 +14,7 @@ routes(app);
 app.use((error, req, res, next) => {
     let status = 500
 
-    if (error instanceof InvalidField) {
+    if (error instanceof InvalidField || error instanceof InvalidArgumentError) {
         status = 400
     }
 
