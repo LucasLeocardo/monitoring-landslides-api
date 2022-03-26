@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const VibrationController = require('../controllers/VibrationController');
 const InvalidField = require('../errorTreatment/InvalidField');
+const middlewaresAuthetication = require('../shared/middlewares-authentication');
 
 const router = Router();
 
 router
-    .post('/vibrations/getMeasurementsByDeviceId', (req, res, next) => { getMesurementsByDeviceIdAsync(req, res, next) });
+    .post('/vibrations/getMeasurementsByDeviceId', middlewaresAuthetication.bearer, (req, res, next) => { getMesurementsByDeviceIdAsync(req, res, next) });
 
 
 async function getMesurementsByDeviceIdAsync(req, res, next) {

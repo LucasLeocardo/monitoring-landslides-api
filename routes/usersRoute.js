@@ -1,11 +1,14 @@
 const { Router } = require('express');
 const UserController = require('../controllers/UserController');
 const InvalidField = require('../errorTreatment/InvalidField');
+const middlewaresAuthetication = require('../shared/middlewares-authentication');
 
 const router = Router();
 
 router
-    .post('/users', (req, res, next) => { createUserAsync(req, res, next) });
+    .post('/users', middlewaresAuthetication.bearer, (req, res, next) => { createUserAsync(req, res, next) })
+    .post('/users/login', middlewaresAuthetication.local, (req, res) => { login(req, res) })
+    .post('/users/logout', middlewaresAuthetication.local, (req, res) => { login(req, res) });
 
 
 async function createUserAsync(req, res, next) {
@@ -27,6 +30,12 @@ function validateRequest (reqBody) {
             throw new InvalidField(field);
         }
     }
+}
+
+function login(req, res) {
+    const token = UserController.createJwtToken(req.user);
+    res.set('Authorization', token);
+    return res.status(204).send();
 }
 
 module.exports = router;

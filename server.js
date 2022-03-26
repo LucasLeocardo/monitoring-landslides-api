@@ -3,19 +3,21 @@ const mongoose = require('mongoose');
 const routes = require('./routes');
 const InvalidField = require('./errorTreatment/InvalidField');
 const InvalidArgumentError = require('./errorTreatment/InvalidArgumentError');
+const localStrategy = require('./shared/authentication-strategies');
 require('dotenv').config();
 
 const app = express();
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const API_PORT = process.env.API_PORT;
+app.use(localStrategy.initialize());
 routes(app);
 
 app.use((error, req, res, next) => {
-    let status = 500
+    let status = 500;
 
     if (error instanceof InvalidField || error instanceof InvalidArgumentError) {
-        status = 400
+        status = 400;
     }
 
     res.status(status).json(error.message);

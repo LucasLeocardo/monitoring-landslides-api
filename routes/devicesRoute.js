@@ -1,14 +1,15 @@
 const { Router } = require('express');
 const DeviceController = require('../controllers/DeviceController');
 const InvalidField = require('../errorTreatment/InvalidField');
+const middlewaresAuthetication = require('../shared/middlewares-authentication');
 
 const router = Router();
 
 router
-    .post('/devices', (req, res, next) => { saveNewDeviceAsync(req, res, next) })
-    .get('/devices', (req, res, next) => { getAllDevicesAsync(req, res, next) })
-    .delete('/devices/:deviceId', (req, res, next) => { deleteDeviceAsync(req, res, next) })
-    .put('/devices', (req, res, next) => { updateDeviceAsync(req, res, next) });
+    .post('/devices', middlewaresAuthetication.bearer, (req, res, next) => { saveNewDeviceAsync(req, res, next) })
+    .get('/devices', middlewaresAuthetication.bearer, (req, res, next) => { getAllDevicesAsync(req, res, next) })
+    .delete('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { deleteDeviceAsync(req, res, next) })
+    .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) });
 
 
 async function saveNewDeviceAsync(req, res, next) {
