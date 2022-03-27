@@ -5,6 +5,7 @@ const InvalidField = require('./errorTreatment/InvalidField');
 const InvalidArgumentError = require('./errorTreatment/InvalidArgumentError');
 const localStrategy = require('./shared/authentication-strategies');
 require('dotenv').config();
+require('./redis/black-list');
 
 const app = express();
 const DB_USER = process.env.DB_USER;
