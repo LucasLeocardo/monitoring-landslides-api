@@ -16,7 +16,7 @@ async function saveNewDeviceAsync(req, res, next) {
     try {
         const reqBody = req.body;
         validateRequest(reqBody);
-        const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name);
+        const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name, reqBody.latitude, reqBody.longitude);
         return res.status(200).json(deviceCreated);
     }
     catch (error) {
@@ -58,7 +58,7 @@ async function updateDeviceAsync(req, res, next) {
 }
 
 function validateRequest (reqBody) {
-    const fields = {id:  'string', name: 'string'};
+    const fields = {id:  'string', name: 'string', latitude: 'string', longitude: 'string'};
     for (const field in reqBody) {
         if (!fields[field] || typeof reqBody[field] !== fields[field]) {
             throw new InvalidField(field);

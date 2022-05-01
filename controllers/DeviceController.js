@@ -2,8 +2,8 @@ const device = require ('../models/Device');
 
 class DeviceController {
    
-    static async createDeviceAsync(deviceName) {
-        const returnedObject = await device.create({name: deviceName});
+    static async createDeviceAsync(deviceName, deviceLatitude, deviceLongitude) {
+        const returnedObject = await device.create({name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude});
         console.log('New device created: ' + deviceName);
         return returnedObject;
     }

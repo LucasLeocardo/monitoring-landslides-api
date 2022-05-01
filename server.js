@@ -4,10 +4,13 @@ const routes = require('./routes');
 const InvalidField = require('./errorTreatment/InvalidField');
 const InvalidArgumentError = require('./errorTreatment/InvalidArgumentError');
 const localStrategy = require('./shared/authentication-strategies');
+var cors = require('cors');
 require('dotenv').config();
 require('./redis/black-list');
 
 const app = express();
+const corsOptions = { exposedHeaders: 'Authorization' };
+app.use(cors(corsOptions));
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const API_PORT = process.env.API_PORT;

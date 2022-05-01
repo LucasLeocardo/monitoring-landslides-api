@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const Device = mongoose.model('Devices', {
     name: String,
+    latitude: String,
+    longiude: String,
     created_at: { type: Date, default: Date.now }
 });
 
