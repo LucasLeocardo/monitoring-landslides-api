@@ -14,7 +14,7 @@ passport.use(
         session: false
     }, async (email, password, done) => {
         try {
-            const user = await UserController.getUserByEmail(email);
+            const user = await UserController.getUserByEmail(email.toLowerCase());
             checkUser(user);
             await checkPassword(password, user.hashPassword);
             return done(null, user);

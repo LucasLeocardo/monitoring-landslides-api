@@ -16,7 +16,7 @@ async function createUserAsync(req, res, next) {
     try {
         validateRequest(req.body);
         const {name, email,  password} = req.body;
-        const userCreated = await UserController.createUserAsync(name, email, password);
+        const userCreated = await UserController.createUserAsync(name, email.toLowerCase(), password);
         return res.status(200).json(userCreated);
     }
     catch (error) {
@@ -26,8 +26,8 @@ async function createUserAsync(req, res, next) {
 
 function login(req, res) {
     const token = UserController.createJwtToken(req.user);
-    res.set('Authorization', token);
-    return res.status(204).send();
+    const { name, email } = req.user;
+    return res.status(200).json({ name, email, token });
 }
 
 async function logout(req, res, next) {
