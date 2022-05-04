@@ -9,7 +9,7 @@ require('dotenv').config();
 require('./redis/black-list');
 
 const app = express();
-const corsOptions = { exposedHeaders: 'Authorization' };
+const corsOptions = { exposedHeaders: 'Authorization', origin: 'http://localhost:3000' };
 app.use(cors(corsOptions));
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
