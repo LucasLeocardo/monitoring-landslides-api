@@ -7,7 +7,7 @@ module.exports = {
             { session: false },
             (error, user, info) => {
                 if (error && error.name === 'InvalidArgumentError') {
-                    return res.status(401).json({ error: error.message });
+                    return res.status(406).json({ error: error.message });
                 }
                 if (error) {
                     return res.status(500).json({ error: error.message });
