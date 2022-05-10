@@ -26,8 +26,8 @@ async function createUserAsync(req, res, next) {
 
 function login(req, res) {
     const token = UserController.createJwtToken(req.user);
-    const { name, email } = req.user;
-    return res.status(200).json({ name, email, token });
+    const { name, email, isAdmin } = req.user;
+    return res.status(200).json({ name, email, isAdmin, token });
 }
 
 async function logout(req, res, next) {
