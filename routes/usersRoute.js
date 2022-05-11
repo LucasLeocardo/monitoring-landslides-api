@@ -15,8 +15,8 @@ router
 async function createUserAsync(req, res, next) {
     try {
         validateRequest(req.body);
-        const {name, email,  password} = req.body;
-        const userCreated = await UserController.createUserAsync(name, email.toLowerCase(), password);
+        const {name, email,  password, phoneNumber} = req.body;
+        const userCreated = await UserController.createUserAsync(name, email.toLowerCase(), password, phoneNumber);
         return res.status(200).json(userCreated);
     }
     catch (error) {
@@ -26,8 +26,8 @@ async function createUserAsync(req, res, next) {
 
 function login(req, res) {
     const token = UserController.createJwtToken(req.user);
-    const { name, email, isAdmin } = req.user;
-    return res.status(200).json({ name, email, isAdmin, token });
+    const { name, email, phoneNumber, isAdmin } = req.user;
+    return res.status(200).json({ name, email, phoneNumber, isAdmin, token });
 }
 
 async function logout(req, res, next) {
@@ -42,7 +42,7 @@ async function logout(req, res, next) {
 }
 
 function validateRequest (reqBody) {
-    const fields = {name:  'string', email: 'string', password: 'string'};
+    const fields = {name:  'string', email: 'string', password: 'string', phoneNumber: 'string'};
     for (const field in reqBody) {
         if (!fields[field] || typeof reqBody[field] !== fields[field]) {
             throw new InvalidField(field);

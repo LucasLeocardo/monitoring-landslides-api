@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 
 class UserController {
 
-    static async createUserAsync(name, email, password) {
-        UserController.validateUser(name, email, password);
+    static async createUserAsync(name, email, password, phoneNumber) {
+        UserController.validateUser(name, email, password, phoneNumber);
         const hashPassword = await UserController.createHashPassword(password);
-        return await User.create({name: name, email: email, hashPassword: hashPassword});
+        return await User.create({name: name, email: email, hashPassword: hashPassword, phoneNumber: phoneNumber});
     }
 
     static async createHashPassword(password) {
@@ -16,12 +16,14 @@ class UserController {
         return await bcrypt.hash(password, hashCost);
     }
 
-    static validateUser(name, email, password) {
+    static validateUser(name, email, password, phoneNumber) {
         commonValidations.stringFieldNotNull(name, 'name');
         commonValidations.stringFieldNotNull(email, 'email');
         commonValidations.stringFieldNotNull(password, 'password');
         commonValidations.minimumSizeField(password, 'password', 6);
         commonValidations.maximumSizeField(password, 'password', 64);
+        commonValidations.minimumSizeField(phoneNumber, 'phoneNumber', 15);
+        commonValidations.maximumSizeField(phoneNumber, 'phoneNumber', 15);
     }
 
     static async getUserByEmail(email) {
