@@ -10,7 +10,8 @@ router
     .post('/user', middlewaresAuthetication.bearer, (req, res, next) => { createUserAsync(req, res, next) })
     .post('/users/login', middlewaresAuthetication.local, (req, res) => { login(req, res) })
     .post('/users/logout', middlewaresAuthetication.bearer, (req, res, next) => { logout(req, res, next) })
-    .get('/users', middlewaresAuthetication.bearer, (req, res, next) => { getUsers(res, next) });
+    .get('/users', middlewaresAuthetication.bearer, (req, res, next) => { getUsers(res, next) })
+    .post('/users/deleteByIds', middlewaresAuthetication.bearer, (req, res, next) => { deleteByIds(req, res, next) });
 
 
 async function createUserAsync(req, res, next) {
@@ -19,6 +20,17 @@ async function createUserAsync(req, res, next) {
         const {name, email,  password, phoneNumber} = req.body;
         const userCreated = await UserController.createUserAsync(name, email.toLowerCase(), password, phoneNumber);
         return res.status(200).json(userCreated);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function deleteByIds(req, res, next) {
+    try {
+        const userIds = req.body;
+        await UserController.deleteUsers(userIds);
+        return res.status(200).send();
     }
     catch (error) {
         next(error);

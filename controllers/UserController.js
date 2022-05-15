@@ -11,6 +11,10 @@ class UserController {
         return await User.create({name: name, email: email, hashPassword: hashPassword, phoneNumber: phoneNumber});
     }
 
+    static async deleteUsers(userIds) {
+        await User.deleteMany({_id:  { $in: userIds } });
+    }
+
     static async getAllUsersList() {
         const usersList = await User.find({}, '_id name email phoneNumber created_at').exec();
         return usersList;
