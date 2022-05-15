@@ -11,6 +11,11 @@ class UserController {
         return await User.create({name: name, email: email, hashPassword: hashPassword, phoneNumber: phoneNumber});
     }
 
+    static async getAllUsersList() {
+        const usersList = await User.find({}, '_id name email phoneNumber created_at').exec();
+        return usersList;
+    }
+
     static async createHashPassword(password) {
         const hashCost  = 12;
         return await bcrypt.hash(password, hashCost);
@@ -21,7 +26,7 @@ class UserController {
         commonValidations.stringFieldNotNull(email, 'email');
         commonValidations.stringFieldNotNull(password, 'password');
         commonValidations.minimumSizeField(password, 'password', 6);
-        commonValidations.maximumSizeField(password, 'password', 64);
+        commonValidations.maximumSizeField(password, 'password', 10);
         commonValidations.minimumSizeField(phoneNumber, 'phoneNumber', 15);
         commonValidations.maximumSizeField(phoneNumber, 'phoneNumber', 15);
     }

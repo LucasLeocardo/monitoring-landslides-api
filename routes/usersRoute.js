@@ -7,9 +7,10 @@ const blackListManagement = require('../redis/black-list-management');
 const router = Router();
 
 router
-    .post('/users', middlewaresAuthetication.bearer, (req, res, next) => { createUserAsync(req, res, next) })
+    .post('/user', middlewaresAuthetication.bearer, (req, res, next) => { createUserAsync(req, res, next) })
     .post('/users/login', middlewaresAuthetication.local, (req, res) => { login(req, res) })
-    .post('/users/logout', middlewaresAuthetication.bearer, (req, res, next) => { logout(req, res, next) });
+    .post('/users/logout', middlewaresAuthetication.bearer, (req, res, next) => { logout(req, res, next) })
+    .get('/users', middlewaresAuthetication.bearer, (req, res, next) => { getUsers(res, next) });
 
 
 async function createUserAsync(req, res, next) {
@@ -18,6 +19,16 @@ async function createUserAsync(req, res, next) {
         const {name, email,  password, phoneNumber} = req.body;
         const userCreated = await UserController.createUserAsync(name, email.toLowerCase(), password, phoneNumber);
         return res.status(200).json(userCreated);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function getUsers(res, next) {
+    try{
+        const usersList = await UserController.getAllUsersList();
+        return res.status(200).json(usersList);
     }
     catch (error) {
         next(error);
