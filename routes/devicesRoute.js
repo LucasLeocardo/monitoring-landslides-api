@@ -8,8 +8,9 @@ const router = Router();
 router
     .post('/devices', middlewaresAuthetication.bearer, (req, res, next) => { saveNewDeviceAsync(req, res, next) })
     .get('/devices', middlewaresAuthetication.bearer, (req, res, next) => { getAllDevicesAsync(req, res, next) })
-    .delete('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { deleteDeviceAsync(req, res, next) })
-    .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) });
+    .delete('/removeDevicesByIds', middlewaresAuthetication.bearer, (req, res, next) => { deleteDevicesAsync(req, res, next) })
+    .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) })
+    .put('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceStatusAsync(req, res, next) });
 
 
 async function saveNewDeviceAsync(req, res, next) {
@@ -17,7 +18,7 @@ async function saveNewDeviceAsync(req, res, next) {
         const reqBody = req.body;
         validateRequest(reqBody);
         const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name, reqBody.latitude, reqBody.longitude);
-        return res.status(200).json(deviceCreated);
+        return res.status(200).json(deviceCreated._id);
     }
     catch (error) {
         next(error);
@@ -34,11 +35,23 @@ async function getAllDevicesAsync(req, res, next) {
     }
 }
 
-async function deleteDeviceAsync(req, res, next) {
+async function deleteDevicesAsync(req, res, next) {
+    try {
+        const { deviceIds } = req.body;
+        const deletedObject = await DeviceController.deleteDevicesAsync(deviceIds);
+        return res.status(200).json(`The number of deleted devices was: ${deletedObject.deletedCount}`);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function updateDeviceStatusAsync(req, res, next) {
     try {
         const deviceId = req.params.deviceId;
-        const deletedObject = await DeviceController.deleteDeviceAsync(deviceId);
-        return res.status(200).json(`The number of deleted devices was: ${deletedObject.deletedCount}`);
+        const { newDeviceStatus } = req.body;
+        const deviceUpdated = await DeviceController.updateDeviceStatusAsync(deviceId, newDeviceStatus);
+        return res.status(200).json(`The number of updated devices was: ${deviceUpdated.modifiedCount}`);
     }
     catch (error) {
         next(error);
@@ -58,7 +71,7 @@ async function updateDeviceAsync(req, res, next) {
 }
 
 function validateRequest (reqBody) {
-    const fields = {id:  'string', name: 'string', latitude: 'string', longitude: 'string'};
+    const fields = {id:  'string', name: 'string', latitude: 'number', longitude: 'number'};
     for (const field in reqBody) {
         if (!fields[field] || typeof reqBody[field] !== fields[field]) {
             throw new InvalidField(field);
