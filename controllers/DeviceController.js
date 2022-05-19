@@ -21,9 +21,9 @@ class DeviceController {
     }
 
     static async deleteDevicesAsync (deviceIds) {
-        temperature.deleteMany({deviceId: { $in: deviceIds }});
-        humidity.deleteMany({deviceId: { $in: deviceIds }});
-        vibration.deleteMany({deviceId: { $in: deviceIds }});
+        await temperature.deleteMany({deviceId: { $in: deviceIds }});
+        await humidity.deleteMany({deviceId: { $in: deviceIds }});
+        await vibration.deleteMany({deviceId: { $in: deviceIds }});
         return await device.deleteMany({_id: { $in: deviceIds } });
     }
 
