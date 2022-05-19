@@ -17,7 +17,7 @@ async function saveNewDeviceAsync(req, res, next) {
     try {
         const reqBody = req.body;
         validateRequest(reqBody);
-        const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name, reqBody.latitude, reqBody.longitude);
+        const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name, reqBody.latitude, reqBody.longitude, req.user._id);
         return res.status(200).json(deviceCreated._id);
     }
     catch (error) {
@@ -27,7 +27,7 @@ async function saveNewDeviceAsync(req, res, next) {
 
 async function getAllDevicesAsync(req, res, next) {
     try {
-        const devices = await DeviceController.getAllDevicesAsync();
+        const devices = await DeviceController.getAllDevicesAsync(req.user);
         return res.status(200).json(devices);
     }
     catch (error) {

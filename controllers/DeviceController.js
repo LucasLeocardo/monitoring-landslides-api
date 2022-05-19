@@ -2,16 +2,22 @@ const device = require ('../models/Device');
 const temperature = require('../models/Temperature');
 const humidity = require('../models/Humidity');
 const vibration = require('../models/Vibration');
+const mongoose = require('mongoose');
 
 class DeviceController {
    
-    static async createDeviceAsync(deviceName, deviceLatitude, deviceLongitude) {
-        const returnedObject = await device.create({name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude});
+    static async createDeviceAsync(deviceName, deviceLatitude, deviceLongitude, userId) {
+        const returnedObject = await device.create({name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude, creatorUserId: mongoose.Types.ObjectId(userId)});
         return returnedObject;
     }
 
-    static async getAllDevicesAsync () {
-        return await device.find({});
+    static async getAllDevicesAsync (user) {
+        if (user.isAdmin) {
+            return await device.find({});   
+        }
+        else {
+            return await device.find({creatorUserId: user._id});
+        }
     }
 
     static async deleteDevicesAsync (deviceIds) {
