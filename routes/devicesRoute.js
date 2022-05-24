@@ -8,6 +8,7 @@ const router = Router();
 router
     .post('/devices', middlewaresAuthetication.bearer, (req, res, next) => { saveNewDeviceAsync(req, res, next) })
     .get('/devices', middlewaresAuthetication.bearer, (req, res, next) => { getAllDevicesAsync(req, res, next) })
+    .get('/activeDevices', middlewaresAuthetication.bearer, (req, res, next) => { getActiveDevicesAsync(req, res, next) })
     .delete('/removeDevicesByIds', middlewaresAuthetication.bearer, (req, res, next) => { deleteDevicesAsync(req, res, next) })
     .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) })
     .put('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceStatusAsync(req, res, next) });
@@ -28,6 +29,16 @@ async function saveNewDeviceAsync(req, res, next) {
 async function getAllDevicesAsync(req, res, next) {
     try {
         const devices = await DeviceController.getAllDevicesAsync(req.user);
+        return res.status(200).json(devices);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function getActiveDevicesAsync(req, res, next) {
+    try {
+        const devices = await DeviceController.getActiveDevicesAsync(req.user);
         return res.status(200).json(devices);
     }
     catch (error) {
