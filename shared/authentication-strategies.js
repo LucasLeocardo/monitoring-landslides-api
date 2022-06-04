@@ -4,8 +4,7 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
 const UserController = require('../controllers/UserController');
 const InvalidArgumentError = require('../errorTreatment/InvalidArgumentError');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const blackListManagement = require('../redis/black-list-management');
+const validateToken = require('./tokenValidation');
 
 passport.use(
     new LocalStrategy({
@@ -29,9 +28,7 @@ passport.use(
     new BearerStrategy(
         async (token, done) => {
             try {
-                await checkTokenInBlackList(token);
-                const payload = jwt.verify(token, process.env.JWT_KEY);
-                const user = await UserController.getUserById(payload.id);
+                const user = await validateToken(token);
                 done(null, user, { token: token });
             }
             catch (error) { 
@@ -51,13 +48,6 @@ async function checkPassword(password, hashPassword) {
     const isPasswordValid = await bcrypt.compare(password, hashPassword);
     if (!isPasswordValid) {
         throw new InvalidArgumentError('Invalid email or password');
-    }
-}
-
-async function checkTokenInBlackList(token) {
-    const isTokenInTheBlackList = await blackListManagement.containsToken(token);
-    if (isTokenInTheBlackList) {
-        throw new jwt.JsonWebTokenError('Invalid Token by logout!');
     }
 }
 
