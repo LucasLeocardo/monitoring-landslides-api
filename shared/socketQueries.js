@@ -20,7 +20,7 @@ module.exports = (io, socket) => {
             }
             lastVibrationDataId = lastVibrationData._id.toString();
         }
-    }, 5000);
+    }, 1000);
 
     const senderTemperatureDataInterval =setInterval(async () => {
         const lastTemperatureData = await TemperatureController.getLastMesurementByDeviceIdAsync(deviceId);
@@ -32,7 +32,7 @@ module.exports = (io, socket) => {
             }
             lastTemperatureDataId = lastTemperatureData._id.toString();
         }
-    }, 20000);
+    }, 1000);
 
     const senderHumidityDataInterval =setInterval(async () => {
         const lastHumidityData = await HumidityController.getLastMesurementByDeviceIdAsync(deviceId);
@@ -44,7 +44,7 @@ module.exports = (io, socket) => {
             }
             lastHumidityDataId = lastHumidityData._id.toString();
         }
-    }, 20000);
+    }, 1000);
 
     socket.on("disconnect", () => {
         console.log(socket.id + " disconnecting....");
