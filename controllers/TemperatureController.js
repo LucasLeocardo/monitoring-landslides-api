@@ -1,8 +1,55 @@
 const temperature = require('../models/Temperature');
+const mongoose = require('mongoose');
 
 class TemperatureController {
-    static async getMesurementsByDeviceIdAsync(deviceId, startDate) {
-        return await temperature.find({deviceId: deviceId, timestamp: { $gte: startDate }}, null, { sort: {timestamp: 'desc'} });
+    static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
+        return await temperature.aggregate(
+            [
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate) }, timestamp: { $lte: new Date(endDate) } } },
+                {  $sort: { timestamp: 1 } },
+                {  $group: { 
+                    _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                    avgT0: {
+                        $avg: "$t0"
+                    },
+                    avgT1: {
+                        $avg: "$t1"
+                    },
+                    avgT2: {
+                        $avg: "$t2"
+                    },
+                    avgT3: {
+                        $avg: "$t3"
+                    },
+                    avgT4: {
+                        $avg: "$t4"
+                    },
+                    avgT5: {
+                        $avg: "$t5"
+                    },
+                    avgT6: {
+                        $avg: "$t6"
+                    },
+                    avgT7: {
+                        $avg: "$t7"
+                    },
+                    avgT8: {
+                        $avg: "$t8"
+                    },
+                    avgT9: {
+                        $avg: "$t9"
+                    }
+                }},
+                {   $project: {
+                    _id: 1, t0: {$round: ['$avgT0', 2]}, t1: {$round: ['$avgT1', 2]}, t2: {$round: ['$avgT2', 2]}, t3: {$round: ['$avgT3', 2]}, t4: {$round: ['$avgT4', 2]}, 
+                    t5: {$round: ['$avgT5', 2]}, t6: {$round: ['$avgT6', 2]}, t7: {$round: ['$avgT7', 2]}, t8: {$round: ['$avgT8', 2]}, t9: {$round: ['$avgT9', 2]}
+                }}
+            ],
+            function(err,results) {
+                if (err) throw err;
+                return results;
+            }
+        );
     }
 
     static async getLastMesurementByDeviceIdAsync(deviceId) {
