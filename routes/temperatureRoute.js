@@ -6,7 +6,7 @@ const middlewaresAuthetication = require('../shared/middlewares-authentication')
 const router = Router();
 
 router
-    .post('/temperatures/getDaillyMeasurementsByDeviceId', middlewaresAuthetication.bearer, (req, res, next) => { getDaillyMeasurementsByDeviceId(req, res, next) });
+    .post('/temperature/getDaillyMeasurementsByDeviceId', middlewaresAuthetication.bearer, (req, res, next) => { getDaillyMeasurementsByDeviceId(req, res, next) });
 
 
 async function getDaillyMeasurementsByDeviceId(req, res, next) {

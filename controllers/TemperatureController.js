@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 
 class TemperatureController {
     static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        return await temperature.aggregate(
+        const temperatureData = await temperature.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate) }, timestamp: { $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
                 {  $sort: { timestamp: 1 } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
@@ -50,6 +50,10 @@ class TemperatureController {
                 return results;
             }
         );
+        return temperatureData.map(data => {
+            return {_id : data._id, temperature: calculateAverage([data.t0, data.t1, data.t2, data.t3, data.t4, data.t5, 
+                data.t6, data.t7, data.t8 , data.t9])}
+        });
     }
 
     static async getLastMesurementByDeviceIdAsync(deviceId) {
@@ -70,3 +74,11 @@ class TemperatureController {
 }
 
 module.exports = TemperatureController;
+
+const calculateAverage = (numberArray) => {
+    let arraySum = 0;
+    numberArray.forEach(item => {
+        arraySum = arraySum + item;
+    });
+    return (Math.round(arraySum) / 10);
+}

@@ -5,7 +5,7 @@ class VibrationController {
     static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
         return await vibration.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate) }, timestamp: { $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
                 {  $sort: { timestamp: 1 } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },

@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 
 class HumidityController {
     static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        return await humidity.aggregate(
+        const humidityData = await humidity.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate) }, timestamp: { $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
                 {  $sort: { timestamp: 1 } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
@@ -50,6 +50,10 @@ class HumidityController {
                 return results;
             }
         );
+        return humidityData.map(data => {
+            return {_id : data._id, humidity: calculateAverage([data.h0, data.h1, data.h2, data.h3, data.h4, data.h5, 
+                data.h6, data.h7, data.h8 , data.h9])}
+        });
     }
 
     static async getLastMesurementByDeviceIdAsync(deviceId) {
@@ -70,3 +74,11 @@ class HumidityController {
 }
 
 module.exports = HumidityController;
+
+const calculateAverage = (numberArray) => {
+    let arraySum = 0;
+    numberArray.forEach(item => {
+        arraySum = arraySum + item;
+    });
+    return (Math.round(arraySum) / 10);
+}
