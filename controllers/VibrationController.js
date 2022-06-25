@@ -6,7 +6,6 @@ class VibrationController {
         return await vibration.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
-                {  $sort: { timestamp: 1 } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
                     avgAcelX: {
@@ -31,7 +30,46 @@ class VibrationController {
                 {   $project: {
                     _id: 1, acelX: {$round: ['$avgAcelX', 2]}, acelY: {$round: ['$avgAcelY', 2]}, acelZ: {$round: ['$avgAcelZ', 2]}, 
                     alphaX: {$round: ['$avgAlphaX', 2]}, alphaY: {$round: ['$avgAlphaY', 2]}, alphaZ: {$round: ['$avgAlphaZ', 2]}
-                }}
+                }},
+                {  $sort: { _id: 1 } }
+            ],
+            function(err,results) {
+                if (err) throw err;
+                return results;
+            }
+        );
+    }
+
+    static async getHourlyMeasurementsByDeviceId(deviceId, startDate, endDate) {
+        return await vibration.aggregate(
+            [
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $group: { 
+                    _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
+                    avgAcelX: {
+                        $avg: "$acelX"
+                    },
+                    avgAcelY: {
+                        $avg: "$acelY"
+                    },
+                    avgAcelZ: {
+                        $avg: "$acelZ"
+                    },
+                    avgAlphaX: {
+                        $avg: "$alphaX"
+                    },
+                    avgAlphaY: {
+                        $avg: "$alphaY"
+                    },
+                    avgAlphaZ: {
+                        $avg: "$alphaZ"
+                    }
+                }},
+                {   $project: {
+                    _id: 1, acelX: {$round: ['$avgAcelX', 2]}, acelY: {$round: ['$avgAcelY', 2]}, acelZ: {$round: ['$avgAcelZ', 2]}, 
+                    alphaX: {$round: ['$avgAlphaX', 2]}, alphaY: {$round: ['$avgAlphaY', 2]}, alphaZ: {$round: ['$avgAlphaZ', 2]}
+                }},
+                {  $sort: { _id: 1 } }
             ],
             function(err,results) {
                 if (err) throw err;

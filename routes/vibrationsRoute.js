@@ -6,7 +6,8 @@ const middlewaresAuthetication = require('../shared/middlewares-authentication')
 const router = Router();
 
 router
-    .post('/vibrations/getDaillyMeasurementsByDeviceId', middlewaresAuthetication.bearer, (req, res, next) => { getDaillyMeasurementsByDeviceId(req, res, next) });
+    .post('/vibrations/getDaillyMeasurementsByDeviceId', middlewaresAuthetication.bearer, (req, res, next) => { getDaillyMeasurementsByDeviceId(req, res, next) })
+    .post('/vibrations/getHourlyMeasurementsByDeviceId', middlewaresAuthetication.bearer, (req, res, next) => { getHourlyMeasurementsByDeviceId(req, res, next) });
 
 
 async function getDaillyMeasurementsByDeviceId(req, res, next) {
@@ -14,6 +15,18 @@ async function getDaillyMeasurementsByDeviceId(req, res, next) {
         const reqBody = req.body;
         validateRequest(reqBody);
         const measurementData = await VibrationController.getDaillyMeasurementsByDeviceId(reqBody.deviceId, reqBody.startDate, reqBody.endDate);
+        return res.status(200).json(measurementData);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function getHourlyMeasurementsByDeviceId(req, res, next) {
+    try {
+        const reqBody = req.body;
+        validateRequest(reqBody);
+        const measurementData = await VibrationController.getHourlyMeasurementsByDeviceId(reqBody.deviceId, reqBody.startDate, reqBody.endDate);
         return res.status(200).json(measurementData);
     }
     catch (error) {
