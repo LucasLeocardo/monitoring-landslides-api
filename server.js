@@ -15,7 +15,7 @@ const socketHandler = require('./shared/socketQueries');
 const app = express();
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
-const API_PORT = process.env.API_PORT;
+const API_PORT = process.env.PORT;
 const FRONT_URL = process.env.FRONT_URL;
 const corsOptions = { exposedHeaders: 'Authorization', origin: FRONT_URL };
 app.use(cors(corsOptions));
