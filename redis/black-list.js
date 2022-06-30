@@ -1,2 +1,17 @@
+require('dotenv').config();
 const redis = require('redis');
-module.exports = redis.createClient({ prefix: 'blacklist:' });
+const createRedisClient = process.env.REDIS_URL ? createHerokuRedisClient : createLocalRedisClient;
+
+module.exports = createRedisClient(redis);
+
+
+function createHerokuRedisClient(redis) {
+    const redisUrlObj = new URL(process.env.REDIS_URL);
+    const redisClient = redis.createClient(redisUrlObj.port, redisUrlObj.hostname, { no_ready_check: true }, { prefix: 'blacklist:' });
+    redisClient.auth(redisUrlObj.password);
+    return redisClient;
+}
+
+function createLocalRedisClient(redis) {
+    return redis.createClient({ prefix: 'blacklist:' });
+}
