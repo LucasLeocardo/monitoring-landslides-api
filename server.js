@@ -18,7 +18,13 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 const API_PORT = process.env.PORT;
 const FRONT_URL = process.env.FRONT_URL;
 const corsOptions = { exposedHeaders: 'Authorization' };
-app.use(cors(corsOptions));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    app.use(cors(corsOptions));
+    next();
+});
 app.use(localStrategy.initialize());
 routes(app);
 
