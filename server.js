@@ -17,7 +17,7 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const API_PORT = process.env.PORT;
 const FRONT_URL = process.env.FRONT_URL;
-const corsOptions = { exposedHeaders: 'Authorization', origin: FRONT_URL };
+const corsOptions = { exposedHeaders: 'Authorization' };
 app.use(cors(corsOptions));
 app.use(localStrategy.initialize());
 routes(app);
