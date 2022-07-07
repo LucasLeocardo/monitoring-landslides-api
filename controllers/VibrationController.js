@@ -1,4 +1,4 @@
-const vibration = require('../models/Vibration');
+const vibration = require('../models/LinearAcceleration');
 const mongoose = require('mongoose');
 
 class VibrationController {

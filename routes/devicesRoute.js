@@ -8,6 +8,7 @@ const router = Router();
 router
     .post('/devices', middlewaresAuthetication.bearer, (req, res, next) => { saveNewDeviceAsync(req, res, next) })
     .get('/devices', middlewaresAuthetication.bearer, (req, res, next) => { getAllDevicesAsync(req, res, next) })
+    .get('/devices/getDeviceById', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceById(req, res, next) })
     .get('/activeDevices', middlewaresAuthetication.bearer, (req, res, next) => { getActiveDevicesAsync(req, res, next) })
     .delete('/removeDevicesByIds', middlewaresAuthetication.bearer, (req, res, next) => { deleteDevicesAsync(req, res, next) })
     .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) })
@@ -18,8 +19,19 @@ async function saveNewDeviceAsync(req, res, next) {
     try {
         const reqBody = req.body;
         validateRequest(reqBody);
-        const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name, reqBody.latitude, reqBody.longitude, req.user._id);
+        const deviceCreated = await DeviceController.createDeviceAsync(reqBody.name, reqBody.latitude, reqBody.longitude, req.user._id, reqBody.measuredDataTypes);
         return res.status(200).json(deviceCreated._id);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function getDeviceById(req, res, next) {
+    try {
+        const { deviceId } = req.query;
+        const device = await DeviceController.getDeviceByIdAsync(deviceId);
+        return res.status(200).json(device);
     }
     catch (error) {
         next(error);
@@ -73,7 +85,7 @@ async function updateDeviceAsync(req, res, next) {
     try {
         const reqBody = req.body;
         validateRequest(reqBody);
-        const deviceUpdated = await DeviceController.updateDeviceAsync(reqBody);
+        const deviceUpdated = await DeviceController.updateDeviceAsync(reqBody.id, reqBody.name, reqBody.latitude, reqBody.longitude, reqBody.measuredDataTypes);
         return res.status(200).json(`The number of updated devices was: ${deviceUpdated.modifiedCount}`);
     }
     catch (error) {
@@ -82,7 +94,7 @@ async function updateDeviceAsync(req, res, next) {
 }
 
 function validateRequest (reqBody) {
-    const fields = {id:  'string', name: 'string', latitude: 'number', longitude: 'number'};
+    const fields = {id:  'string', name: 'string', latitude: 'number', longitude: 'number', measuredDataTypes: 'object'};
     for (const field in reqBody) {
         if (!fields[field] || typeof reqBody[field] !== fields[field]) {
             throw new InvalidField(field);
