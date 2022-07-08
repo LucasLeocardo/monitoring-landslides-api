@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const PorePressure = mongoose.model('PorePressure', {
-    values: [Number],
+    value: Number,
     deviceId: mongoose.ObjectId,
     timestamp: { type: Date, default: Date.now }
 });

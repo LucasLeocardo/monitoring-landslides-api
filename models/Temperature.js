@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const Temperature = mongoose.model('Temperature', {
-    values: [Number],
+    value: Number,
     deviceId: mongoose.ObjectId,
     timestamp: { type: Date, default: Date.now }
 });

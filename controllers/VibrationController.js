@@ -1,9 +1,10 @@
-const vibration = require('../models/LinearAcceleration');
+const linearAcceleration = require('../models/LinearAcceleration');
+const angularAcceleration = require('../models/AngularAcceleration');
 const mongoose = require('mongoose');
 
 class VibrationController {
     static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        return await vibration.aggregate(
+        return await linearAcceleration.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
                 {  $group: { 
@@ -45,7 +46,7 @@ class VibrationController {
         realStartDate.setHours(realStartDate.getHours() - Math.floor(Math.abs(realStartDate.getTimezoneOffset()) / 60));
         const realEndDate = new Date(endDate);
         realEndDate.setHours(realEndDate.getHours() - Math.floor(Math.abs(realEndDate.getTimezoneOffset()) / 60));
-        return await vibration.aggregate(
+        return await linearAcceleration.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: realStartDate, $lte: realEndDate } } },
                 {  $group: { 
@@ -82,12 +83,18 @@ class VibrationController {
         );
     }
 
-    static async getLastMesurementByDeviceIdAsync(deviceId) {
-        return await vibration.findOne({deviceId: deviceId}).sort({timestamp: 'desc'}).limit(1).select({
+    static async getLastLinearAccelerationByDeviceIdAsync(deviceId) {
+        return await linearAcceleration.findOne({deviceId: deviceId}).sort({timestamp: 'desc'}).limit(1).select({
             "_id": 1,
             "acelX": 1,
             "acelY": 1,
-            "acelZ": 1,
+            "acelZ": 1
+        }).exec();
+    }
+
+    static async getLastAngularAccelerationByDeviceIdAsync(deviceId) {
+        return await angularAcceleration.findOne({deviceId: deviceId}).sort({timestamp: 'desc'}).limit(1).select({
+            "_id": 1,
             "alphaX": 1,
             "alphaY": 1,
             "alphaZ": 1

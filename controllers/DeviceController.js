@@ -69,6 +69,11 @@ class DeviceController {
         return await device.updateOne({_id: deviceId}, {isActive: newDeviceStatus});
     }
 
+    static async getDeviceMeasurementTypesAsync (id) {
+        const { measuredDataTypes } = await device.findOne({_id: id}, {creatorUserId: false, created_at: false, _id: false, isActive: false, __v: false, name: false, latitude: false, longitude: false});
+        return measuredDataTypes.map(deviceMeasuredDataType => deviceMeasuredDataType.measurementType);
+    }
+
 }
 
 module.exports = DeviceController;

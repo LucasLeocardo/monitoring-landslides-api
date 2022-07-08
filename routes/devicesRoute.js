@@ -12,7 +12,8 @@ router
     .get('/activeDevices', middlewaresAuthetication.bearer, (req, res, next) => { getActiveDevicesAsync(req, res, next) })
     .delete('/removeDevicesByIds', middlewaresAuthetication.bearer, (req, res, next) => { deleteDevicesAsync(req, res, next) })
     .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) })
-    .put('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceStatusAsync(req, res, next) });
+    .put('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceStatusAsync(req, res, next) })
+    .get('/getDeviceMeasurementTypes', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceMeasurementTypes(req, res, next) });
 
 
 async function saveNewDeviceAsync(req, res, next) {
@@ -87,6 +88,17 @@ async function updateDeviceAsync(req, res, next) {
         validateRequest(reqBody);
         const deviceUpdated = await DeviceController.updateDeviceAsync(reqBody.id, reqBody.name, reqBody.latitude, reqBody.longitude, reqBody.measuredDataTypes);
         return res.status(200).json(`The number of updated devices was: ${deviceUpdated.modifiedCount}`);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function getDeviceMeasurementTypes(req, res, next) {
+    try {
+        const { deviceId } = req.query;
+        const deviceMeasurementTypes = await DeviceController.getDeviceMeasurementTypesAsync(deviceId);
+        return res.status(200).json(deviceMeasurementTypes);
     }
     catch (error) {
         next(error);
