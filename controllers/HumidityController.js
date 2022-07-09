@@ -76,13 +76,9 @@ class HumidityController {
     // }
 
     static async getHourlyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        const realStartDate = new Date(startDate);
-        realStartDate.setHours(realStartDate.getHours() - Math.floor(Math.abs(realStartDate.getTimezoneOffset()) / 60));
-        const realEndDate = new Date(endDate);
-        realEndDate.setHours(realEndDate.getHours() - Math.floor(Math.abs(realEndDate.getTimezoneOffset()) / 60));
         return await humidity.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: realStartDate, $lte: realEndDate } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
                     avgValue: {

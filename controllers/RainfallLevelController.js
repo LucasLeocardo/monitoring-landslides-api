@@ -17,7 +17,7 @@ class RainfallLevelController {
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
                     avgValue: {
-                        $avg: "value"
+                        $avg: "$value"
                     }
                 }},
                 {   $project: {
@@ -33,13 +33,13 @@ class RainfallLevelController {
     }
 
     static async getHourlyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        const realStartDate = new Date(startDate);
-        realStartDate.setHours(realStartDate.getHours() - Math.floor(Math.abs(realStartDate.getTimezoneOffset()) / 60));
-        const realEndDate = new Date(endDate);
-        realEndDate.setHours(realEndDate.getHours() - Math.floor(Math.abs(realEndDate.getTimezoneOffset()) / 60));
+        // const realStartDate = new Date(startDate);
+        // realStartDate.setHours(realStartDate.getHours() - Math.floor(Math.abs(realStartDate.getTimezoneOffset()) / 60));
+        // const realEndDate = new Date(endDate);
+        // realEndDate.setHours(realEndDate.getHours() - Math.floor(Math.abs(realEndDate.getTimezoneOffset()) / 60));
         return await rainfallLevel.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: realStartDate, $lte: realEndDate } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
                     avgValue: {
