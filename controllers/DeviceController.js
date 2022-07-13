@@ -14,7 +14,9 @@ class DeviceController {
             return {
                 measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType._id),
                 measurementType: deviceMeasuredDataType.name,
-                unit: deviceMeasuredDataType.unit
+                unit: deviceMeasuredDataType.unit,
+                gain: deviceMeasuredDataType.gain ? Number(deviceMeasuredDataType.gain) : 1,
+                offSet: deviceMeasuredDataType.offSet ? Number(deviceMeasuredDataType.offSet) : 0
             };
         });
         const returnedObject = await device.create({name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude, 
@@ -59,7 +61,9 @@ class DeviceController {
             return {
                 measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType._id),
                 measurementType: deviceMeasuredDataType.name,
-                unit: deviceMeasuredDataType.unit
+                unit: deviceMeasuredDataType.unit,
+                gain: deviceMeasuredDataType.gain ? Number(deviceMeasuredDataType.gain) : 1,
+                offSet: deviceMeasuredDataType.offSet ? Number(deviceMeasuredDataType.offSet) : 0
             };
         });
         return await device.updateOne({_id: deviceId}, {name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude, measuredDataTypes});
