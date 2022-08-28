@@ -11,7 +11,8 @@ module.exports = async (io, socket) => {
     console.log("New socket connected = " + socket.id); // ojIckSD2jqNzOqIrAGzL
 
     const deviceId = socket.handshake.query.deviceId;
-    const deviceMeasurementTypes = await DeviceController.getDeviceMeasurementTypesAsync(deviceId);
+    const deviceMeasuredDataTypes = await DeviceController.getDeviceMeasurementDataTypesAsync(deviceId);
+    const deviceMeasurementTypes = deviceMeasuredDataTypes.map(deviceMeasuredDataType => deviceMeasuredDataType.measurementType);
     const dataIntervalList = [];
     let lastLinearAccelerationDataId = '';
     let lastAngularAccelerationDataId = '';
@@ -21,11 +22,12 @@ module.exports = async (io, socket) => {
     let lastRainfallLevelDataId = '';
 
     if (deviceMeasurementTypes.includes(MeasurementTypes.LINEAR_ACCELERATION)) {
+        const measurementTypeId = deviceMeasuredDataTypes.find(deviceMeasuredDataType => deviceMeasuredDataType.measurementType === MeasurementTypes.LINEAR_ACCELERATION).measurementTypeId;
         const senderLinearAccelerationDataInterval = setInterval(async () => {
-            const lastLinearAccelerationData = await VibrationController.getLastLinearAccelerationByDeviceIdAsync(deviceId);
+            const lastLinearAccelerationData = await VibrationController.getLastLinearAccelerationByDeviceIdAsync(deviceId, measurementTypeId);
             if (lastLinearAccelerationData) {
                 if (lastLinearAccelerationData._id.toString() !== lastLinearAccelerationDataId) {
-                    socket.volatile.emit("linear-acceleration-data", lastLinearAccelerationData);
+                    socket.volatile.emit("linear-acceleration-data", lastLinearAccelerationData.value);
                 }
                 lastLinearAccelerationDataId = lastLinearAccelerationData._id.toString();
             }
@@ -34,11 +36,12 @@ module.exports = async (io, socket) => {
     }
 
     if (deviceMeasurementTypes.includes(MeasurementTypes.ANGULAR_ACCELERATION)) {
+        const measurementTypeId = deviceMeasuredDataTypes.find(deviceMeasuredDataType => deviceMeasuredDataType.measurementType === MeasurementTypes.ANGULAR_ACCELERATION).measurementTypeId;
         const senderAngularAccelerationDataInterval = setInterval(async () => {
-            const lastAngularAccelerationData = await VibrationController.getLastAngularAccelerationByDeviceIdAsync(deviceId);
+            const lastAngularAccelerationData = await VibrationController.getLastAngularAccelerationByDeviceIdAsync(deviceId, measurementTypeId);
             if (lastAngularAccelerationData) {
                 if (lastAngularAccelerationData._id.toString() !== lastAngularAccelerationDataId) {
-                    socket.volatile.emit("angular-acceleration-data", lastAngularAccelerationData);
+                    socket.volatile.emit("angular-acceleration-data", lastAngularAccelerationData.value);
                 }
                 lastAngularAccelerationDataId = lastAngularAccelerationData._id.toString();
             }
@@ -47,11 +50,12 @@ module.exports = async (io, socket) => {
     }
 
     if (deviceMeasurementTypes.includes(MeasurementTypes.TEMPERATURE)) {
+        const measurementTypeId = deviceMeasuredDataTypes.find(deviceMeasuredDataType => deviceMeasuredDataType.measurementType === MeasurementTypes.TEMPERATURE).measurementTypeId;
         const senderTemperatureDataInterval = setInterval(async () => {
-            const lastTemperatureData = await TemperatureController.getLastMesurementByDeviceIdAsync(deviceId);
+            const lastTemperatureData = await TemperatureController.getLastMesurementByDeviceIdAsync(deviceId, measurementTypeId);
             if (lastTemperatureData) {
                 if (lastTemperatureData._id.toString() !== lastTemperatureDataId) {
-                    socket.volatile.emit("temperature-data", { temperature: lastTemperatureData.value });
+                    socket.volatile.emit("temperature-data", lastTemperatureData.value);
                 }
                 lastTemperatureDataId = lastTemperatureData._id.toString();
             }
@@ -73,11 +77,12 @@ module.exports = async (io, socket) => {
     // }, 1000);
 
     if (deviceMeasurementTypes.includes(MeasurementTypes.HUMIDITY)) {
+        const measurementTypeId = deviceMeasuredDataTypes.find(deviceMeasuredDataType => deviceMeasuredDataType.measurementType === MeasurementTypes.HUMIDITY).measurementTypeId;
         const senderHumidityDataInterval = setInterval(async () => {
-            const lastHumidityData = await HumidityController.getLastMesurementByDeviceIdAsync(deviceId);
+            const lastHumidityData = await HumidityController.getLastMesurementByDeviceIdAsync(deviceId, measurementTypeId);
             if (lastHumidityData) {
                 if (lastHumidityData._id.toString() !== lastHumidityDataId) {
-                    socket.volatile.emit("humidity-data", { humidity: lastHumidityData.value });
+                    socket.volatile.emit("humidity-data", lastHumidityData.value);
                 }
                 lastHumidityDataId = lastHumidityData._id.toString();
             }
@@ -98,11 +103,12 @@ module.exports = async (io, socket) => {
     // }, 1000);
 
     if (deviceMeasurementTypes.includes(MeasurementTypes.RAINFALL_LEVEL)) {
+        const measurementTypeId = deviceMeasuredDataTypes.find(deviceMeasuredDataType => deviceMeasuredDataType.measurementType === MeasurementTypes.RAINFALL_LEVEL).measurementTypeId;
         const senderRainFallLevelDataInterval = setInterval(async () => {
-            const lastRainFallLevelData = await RainfallLevelController.getLastMesurementByDeviceIdAsync(deviceId);
+            const lastRainFallLevelData = await RainfallLevelController.getLastMesurementByDeviceIdAsync(deviceId, measurementTypeId);
             if (lastRainFallLevelData) {
                 if (lastRainFallLevelData._id.toString() !== lastRainfallLevelDataId) {
-                    socket.volatile.emit("rainfall-level-data", { rainfallLevel: lastRainFallLevelData.value });
+                    socket.volatile.emit("rainfall-level-data", lastRainFallLevelData.value);
                 }
                 lastRainfallLevelDataId = lastRainFallLevelData._id.toString();
             }
@@ -111,11 +117,12 @@ module.exports = async (io, socket) => {
     }
 
     if (deviceMeasurementTypes.includes(MeasurementTypes.PORO_PRESSURE)) {
+        const measurementTypeId = deviceMeasuredDataTypes.find(deviceMeasuredDataType => deviceMeasuredDataType.measurementType === MeasurementTypes.PORO_PRESSURE).measurementTypeId;
         const senderPoroPressureDataInterval = setInterval(async () => {
-            const lastPoroPressureData = await PoroPressureController.getLastMesurementByDeviceIdAsync(deviceId);
+            const lastPoroPressureData = await PoroPressureController.getLastMesurementByDeviceIdAsync(deviceId, measurementTypeId);
             if (lastPoroPressureData) {
                 if (lastPoroPressureData._id.toString() !== lastPoroPressureDataId) {
-                    socket.volatile.emit("poro-pressure-data", { poroPressure: lastPoroPressureData.value });
+                    socket.volatile.emit("poro-pressure-data", lastPoroPressureData.value);
                 }
                 lastPoroPressureDataId = lastPoroPressureData._id.toString();
             }

@@ -1,10 +1,5 @@
 const device = require ('../models/Device');
-const temperature = require('../models/Temperature');
-const humidity = require('../models/Humidity');
-const rainfallLevel = require('../models/RainfallLevel');
-const porePressure = require('../models/PorePressure');
-const angularAcceleration = require('../models/AngularAcceleration');
-const linearAcceleration = require('../models/LinearAcceleration');
+const iotData = require('../models/IotData');
 const mongoose = require('mongoose');
 
 class DeviceController {
@@ -47,12 +42,7 @@ class DeviceController {
     }
 
     static async deleteDevicesAsync (deviceIds) {
-        await temperature.deleteMany({deviceId: { $in: deviceIds }});
-        await humidity.deleteMany({deviceId: { $in: deviceIds }});
-        await rainfallLevel.deleteMany({deviceId: { $in: deviceIds }});
-        await porePressure.deleteMany({deviceId: { $in: deviceIds }});
-        await linearAcceleration.deleteMany({deviceId: { $in: deviceIds }});
-        await angularAcceleration.deleteMany({deviceId: { $in: deviceIds }});
+        await iotData.deleteMany({deviceId: { $in: deviceIds }});
         return await device.deleteMany({_id: { $in: deviceIds } });
     }
 
@@ -77,6 +67,12 @@ class DeviceController {
         const { measuredDataTypes } = await device.findOne({_id: id}, {creatorUserId: false, created_at: false, _id: false, isActive: false, __v: false, name: false, latitude: false, longitude: false});
         return measuredDataTypes.map(deviceMeasuredDataType => deviceMeasuredDataType.measurementType);
     }
+
+    static async getDeviceMeasurementDataTypesAsync (id) {
+        const { measuredDataTypes } = await device.findOne({_id: id}, {creatorUserId: false, created_at: false, _id: false, isActive: false, __v: false, name: false, latitude: false, longitude: false});
+        return measuredDataTypes;
+    }
+
 
 }
 

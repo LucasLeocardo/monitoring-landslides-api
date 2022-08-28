@@ -1,22 +1,24 @@
-const linearAcceleration = require('../models/LinearAcceleration');
-const angularAcceleration = require('../models/AngularAcceleration');
+const iotData = require('../models/IotData');
 const mongoose = require('mongoose');
+const measurementTypes = require('../entities/measurementTypes');
+const MeasurementTypeController = require('../controllers/MeasurementTypeController');
 
 class VibrationController {
     static async getDaillyLinearAccelerationByDeviceId(deviceId, startDate, endDate) {
-        return await linearAcceleration.aggregate(
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.LINEAR_ACCELERATION);
+        return await iotData.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate)}, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
                     avgAcelX: {
-                        $avg: "$acelX"
+                        $avg: "$value.acelX"
                     },
                     avgAcelY: {
-                        $avg: "$acelY"
+                        $avg: "$value.acelY"
                     },
                     avgAcelZ: {
-                        $avg: "$acelZ"
+                        $avg: "$value.acelZ"
                     }
                 }},
                 {   $project: {
@@ -32,19 +34,20 @@ class VibrationController {
     }
 
     static async getDaillyAngularAccelerationByDeviceId(deviceId, startDate, endDate) {
-        return await angularAcceleration.aggregate(
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.ANGULAR_ACCELERATION);
+        return await iotData.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
                     avgAlphaX: {
-                        $avg: "$alphaX"
+                        $avg: "$value.alphaX"
                     },
                     avgAlphaY: {
-                        $avg: "$alphaY"
+                        $avg: "$value.alphaY"
                     },
                     avgAlphaZ: {
-                        $avg: "$alphaZ"
+                        $avg: "$value.alphaZ"
                     }
                 }},
                 {   $project: {
@@ -60,19 +63,20 @@ class VibrationController {
     }
 
     static async getHourlyLinearAccelerationByDeviceId(deviceId, startDate, endDate) {
-        return await linearAcceleration.aggregate(
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.LINEAR_ACCELERATION);
+        return await iotData.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
                     avgAcelX: {
-                        $avg: "$acelX"
+                        $avg: "$value.acelX"
                     },
                     avgAcelY: {
-                        $avg: "$acelY"
+                        $avg: "$value.acelY"
                     },
                     avgAcelZ: {
-                        $avg: "$acelZ"
+                        $avg: "$value.acelZ"
                     }
                 }},
                 {   $project: {
@@ -88,19 +92,20 @@ class VibrationController {
     }
 
     static async getHourlyAngularAccelerationByDeviceId(deviceId, startDate, endDate) {
-        return await angularAcceleration.aggregate(
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.ANGULAR_ACCELERATION);
+        return await iotData.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
                     avgAlphaX: {
-                        $avg: "$alphaX"
+                        $avg: "$value.alphaX"
                     },
                     avgAlphaY: {
-                        $avg: "$alphaY"
+                        $avg: "$value.alphaY"
                     },
                     avgAlphaZ: {
-                        $avg: "$alphaZ"
+                        $avg: "$value.alphaZ"
                     }
                 }},
                 {   $project: {
@@ -115,21 +120,17 @@ class VibrationController {
         );
     }
 
-    static async getLastLinearAccelerationByDeviceIdAsync(deviceId) {
-        return await linearAcceleration.findOne({deviceId: deviceId}).sort({timestamp: 'desc'}).limit(1).select({
+    static async getLastLinearAccelerationByDeviceIdAsync(deviceId, measurementTypeId) {
+        return  await iotData.findOne({deviceId: deviceId, measurementTypeId: measurementTypeId}).sort({timestamp: 'desc'}).limit(1).select({
             "_id": 1,
-            "acelX": 1,
-            "acelY": 1,
-            "acelZ": 1
+            "value": 1
         }).exec();
     }
 
-    static async getLastAngularAccelerationByDeviceIdAsync(deviceId) {
-        return await angularAcceleration.findOne({deviceId: deviceId}).sort({timestamp: 'desc'}).limit(1).select({
+    static async getLastAngularAccelerationByDeviceIdAsync(deviceId, measurementTypeId) {
+        return await iotData.findOne({deviceId: deviceId, measurementTypeId: measurementTypeId}).sort({timestamp: 'desc'}).limit(1).select({
             "_id": 1,
-            "alphaX": 1,
-            "alphaY": 1,
-            "alphaZ": 1
+            "value": 1
         }).exec();
     }
 }

@@ -1,16 +1,19 @@
-const temperature = require('../models/Temperature');
+const iotData = require('../models/IotData');
 const mongoose = require('mongoose');
+const measurementTypes = require('../entities/measurementTypes');
+const MeasurementTypeController = require('../controllers/MeasurementTypeController');
 
 class TemperatureController {
 
     static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        return await temperature.aggregate(
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.TEMPERATURE);
+        return await iotData.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
                     avgValue: {
-                        $avg: "$value"
+                        $avg: "$value.temperature"
                     }
                 }},
                 {   $project: {
@@ -76,13 +79,14 @@ class TemperatureController {
     // }
 
     static async getHourlyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        return await temperature.aggregate(
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.TEMPERATURE);
+        return await iotData.aggregate(
             [
-                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) } } },
+                {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
                     avgValue: {
-                        $avg: "$value"
+                        $avg: "$value.temperature"
                     }
                 }},
                 {   $project: {
@@ -167,8 +171,8 @@ class TemperatureController {
     //     }).exec();
     // }
 
-    static async getLastMesurementByDeviceIdAsync(deviceId) {
-        return await temperature.findOne({deviceId: deviceId}).sort({timestamp: 'desc'}).limit(1).select({
+    static async getLastMesurementByDeviceIdAsync(deviceId, measurementTypeId) {
+        return await iotData.findOne({deviceId: deviceId, measurementTypeId: measurementTypeId}).sort({timestamp: 'desc'}).limit(1).select({
             "_id": 1,
             "value": 1
         }).exec();
