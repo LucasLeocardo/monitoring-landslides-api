@@ -9,9 +9,11 @@ router
     .post('/devices', middlewaresAuthetication.bearer, (req, res, next) => { saveNewDeviceAsync(req, res, next) })
     .get('/devices', middlewaresAuthetication.bearer, (req, res, next) => { getAllDevicesAsync(req, res, next) })
     .get('/devices/getDeviceById', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceById(req, res, next) })
+    .get('/devices/getDeviceMeasuredDataTypesById', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceMeasuredDataTypesById(req, res, next) })
     .get('/activeDevices', middlewaresAuthetication.bearer, (req, res, next) => { getActiveDevicesAsync(req, res, next) })
     .delete('/removeDevicesByIds', middlewaresAuthetication.bearer, (req, res, next) => { deleteDevicesAsync(req, res, next) })
     .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) })
+    .put('/devices/UpdateDeviceCalibrationCurves', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceCalibrationCurvesAsync(req, res, next) })
     .put('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceStatusAsync(req, res, next) })
     .get('/getDeviceMeasurementTypes', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceMeasurementTypes(req, res, next) });
 
@@ -33,6 +35,17 @@ async function getDeviceById(req, res, next) {
         const { deviceId } = req.query;
         const device = await DeviceController.getDeviceByIdAsync(deviceId);
         return res.status(200).json(device);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function getDeviceMeasuredDataTypesById(req, res, next) {
+    try {
+        const { deviceId } = req.query;
+        const measuredDataTypes = await DeviceController.getDeviceMeasuredDataTypesByIdAsync(deviceId);
+        return res.status(200).json(measuredDataTypes);
     }
     catch (error) {
         next(error);
@@ -87,6 +100,17 @@ async function updateDeviceAsync(req, res, next) {
         const reqBody = req.body;
         validateRequest(reqBody);
         const deviceUpdated = await DeviceController.updateDeviceAsync(reqBody.id, reqBody.name, reqBody.latitude, reqBody.longitude, reqBody.measuredDataTypes);
+        return res.status(200).json(`The number of updated devices was: ${deviceUpdated.modifiedCount}`);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function updateDeviceCalibrationCurvesAsync(req, res, next) {
+    try {
+        const reqBody = req.body;
+        const deviceUpdated = await DeviceController.updateDeviceCalibrationCurvesAsync(reqBody.id, reqBody.deviceDataTypes);
         return res.status(200).json(`The number of updated devices was: ${deviceUpdated.modifiedCount}`);
     }
     catch (error) {

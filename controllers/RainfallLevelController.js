@@ -36,10 +36,6 @@ class RainfallLevelController {
     }
 
     static async getHourlyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        // const realStartDate = new Date(startDate);
-        // realStartDate.setHours(realStartDate.getHours() - Math.floor(Math.abs(realStartDate.getTimezoneOffset()) / 60));
-        // const realEndDate = new Date(endDate);
-        // realEndDate.setHours(realEndDate.getHours() - Math.floor(Math.abs(realEndDate.getTimezoneOffset()) / 60));
         const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.RAINFALL_LEVEL);
         return await iotData.aggregate(
             [

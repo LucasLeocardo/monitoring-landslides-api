@@ -8,10 +8,10 @@ class DeviceController {
         const measuredDataTypes = deviceMeasuredDataTypes.map(deviceMeasuredDataType => {
             return {
                 measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType._id),
-                measurementType: deviceMeasuredDataType.name,
+                measurementType: deviceMeasuredDataType.measurementType,
+                measuredData: deviceMeasuredDataType.measuredData,
                 unit: deviceMeasuredDataType.unit,
-                gain: deviceMeasuredDataType.gain ? Number(deviceMeasuredDataType.gain) : 1,
-                offSet: deviceMeasuredDataType.offSet ? Number(deviceMeasuredDataType.offSet) : 0
+                calibrationCurve: deviceMeasuredDataType.calibrationCurve
             };
         });
         const returnedObject = await device.create({name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude, 
@@ -21,6 +21,18 @@ class DeviceController {
 
     static async getDeviceByIdAsync (id) {
         return await device.findOne({_id: id}, {creatorUserId: false, created_at: false, _id: false, isActive: false, __v: false});
+    }
+
+    static async getDeviceMeasuredDataTypesByIdAsync (id) {
+        return await device.findOne({_id: id}, {
+            creatorUserId: false, 
+            created_at: false, 
+            _id: false, 
+            isActive: false, 
+            __v: false,
+            latitude: false,
+            longitude: false
+        });
     }
 
     static async getAllDevicesAsync (user) {
@@ -57,6 +69,10 @@ class DeviceController {
             };
         });
         return await device.updateOne({_id: deviceId}, {name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude, measuredDataTypes});
+    }
+
+    static async updateDeviceCalibrationCurvesAsync(deviceId, measuredDataTypes) {
+        return await device.updateOne({_id: deviceId}, {measuredDataTypes: measuredDataTypes});
     }
 
     static async updateDeviceStatusAsync (deviceId, newDeviceStatus) {

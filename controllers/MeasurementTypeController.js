@@ -12,6 +12,11 @@ class MeasurementTypeController {
         }).exec();  
     }
 
+    static async createMeasurementTypeAsync(measurementTypeObj) {
+        const returnedObject = await measurementType.create(measurementTypeObj);
+        return returnedObject;
+    }
+
 }
 
 module.exports = MeasurementTypeController;
