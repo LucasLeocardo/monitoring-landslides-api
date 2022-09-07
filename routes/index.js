@@ -6,7 +6,7 @@ const temperatureRoute = require('./temperatureRoute');
 const userRoute = require('./usersRoute');
 const measurementTypeRoute = require('./measurementTypeRoute');
 const rainfallLevelRoute = require('./rainfallLevelRoute');
-const poroPressureRoute = require('./poroPressureRoute');
+const pressureRoute = require('./pressureRoute');
 
 module.exports = app => {
     app.use(
@@ -18,6 +18,6 @@ module.exports = app => {
         userRoute,
         measurementTypeRoute,
         rainfallLevelRoute,
-        poroPressureRoute
+        pressureRoute
     );
 };

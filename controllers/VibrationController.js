@@ -33,25 +33,25 @@ class VibrationController {
         );
     }
 
-    static async getDaillyAngularAccelerationByDeviceId(deviceId, startDate, endDate) {
-        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.ANGULAR_ACCELERATION);
+    static async getDaillyAngularVelocityByDeviceId(deviceId, startDate, endDate) {
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.ANGULAR_VELOCITY);
         return await iotData.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
-                    avgAlphaX: {
-                        $avg: "$value.alphaX"
+                    avgWx: {
+                        $avg: "$value.wX"
                     },
-                    avgAlphaY: {
-                        $avg: "$value.alphaY"
+                    avgWy: {
+                        $avg: "$value.wY"
                     },
-                    avgAlphaZ: {
-                        $avg: "$value.alphaZ"
+                    avgWz: {
+                        $avg: "$value.wZ"
                     }
                 }},
                 {   $project: {
-                    _id: 1, x: {$round: ['$avgAlphaX', 2]}, y: {$round: ['$avgAlphaY', 2]}, z: {$round: ['$avgAlphaZ', 2]}
+                    _id: 1, x: {$round: ['$avgWx', 2]}, y: {$round: ['$avgWy', 2]}, z: {$round: ['$avgWz', 2]}
                 }},
                 {  $sort: { _id: 1 } }
             ],
@@ -91,25 +91,25 @@ class VibrationController {
         );
     }
 
-    static async getHourlyAngularAccelerationByDeviceId(deviceId, startDate, endDate) {
-        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.ANGULAR_ACCELERATION);
+    static async getHourlyAngularVelocityByDeviceId(deviceId, startDate, endDate) {
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.ANGULAR_VELOCITY);
         return await iotData.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
-                    avgAlphaX: {
-                        $avg: "$value.alphaX"
+                    avgWx: {
+                        $avg: "$value.wX"
                     },
-                    avgAlphaY: {
-                        $avg: "$value.alphaY"
+                    avgWy: {
+                        $avg: "$value.wY"
                     },
-                    avgAlphaZ: {
-                        $avg: "$value.alphaZ"
+                    avgWz: {
+                        $avg: "$value.wZ"
                     }
                 }},
                 {   $project: {
-                    _id: 1, x: {$round: ['$avgAlphaX', 2]}, y: {$round: ['$avgAlphaY', 2]}, z: {$round: ['$avgAlphaZ', 2]}
+                    _id: 1, x: {$round: ['$avgWx', 2]}, y: {$round: ['$avgWy', 2]}, z: {$round: ['$avgWz', 2]}
                 }},
                 {  $sort: { _id: 1 } }
             ],

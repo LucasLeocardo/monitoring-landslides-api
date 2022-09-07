@@ -47,7 +47,7 @@ class UserController {
         const payload = {
             id: user.id
         };
-        const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn: '60m'});
+        const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn: '120m'});
         return token;
     }
 

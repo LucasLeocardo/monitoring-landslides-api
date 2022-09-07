@@ -13,14 +13,14 @@ class PressureController {
     }
 
     static async getDaillyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.PORO_PRESSURE);
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.PRESSURE);
         return await iotData.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
                     avgValue: {
-                        $avg: "$value.poroPressure"
+                        $avg: "$value.pressure"
                     }
                 }},
                 {   $project: {
@@ -36,14 +36,14 @@ class PressureController {
     }
 
     static async getHourlyMeasurementsByDeviceId(deviceId, startDate, endDate) {
-        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.PORO_PRESSURE);
+        const measurementTypeId = await MeasurementTypeController.getMeasurementTypeIdAsync(measurementTypes.PRESSURE);
         return await iotData.aggregate(
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
                     _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
                     avgValue: {
-                        $avg: "$value.poroPressure"
+                        $avg: "$value.pressure"
                     }
                 }},
                 {   $project: {
