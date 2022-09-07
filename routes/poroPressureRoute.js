@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const PoroPressureController = require('../controllers/PoroPressureController');
+const PoroPressureController = require('../controllers/PressureController');
 const InvalidField = require('../errorTreatment/InvalidField');
 const middlewaresAuthetication = require('../shared/middlewares-authentication');
 

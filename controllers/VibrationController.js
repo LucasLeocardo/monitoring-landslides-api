@@ -127,7 +127,7 @@ class VibrationController {
         }).exec();
     }
 
-    static async getLastAngularAccelerationByDeviceIdAsync(deviceId, measurementTypeId) {
+    static async getLastAngularVelocityByDeviceIdAsync(deviceId, measurementTypeId) {
         return await iotData.findOne({deviceId: deviceId, measurementTypeId: measurementTypeId}).sort({timestamp: 'desc'}).limit(1).select({
             "_id": 1,
             "value": 1

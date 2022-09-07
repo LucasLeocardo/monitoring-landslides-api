@@ -1,9 +1,9 @@
 const iotData = require('../models/IotData');
 const mongoose = require('mongoose');
 const measurementTypes = require('../entities/measurementTypes');
-const MeasurementTypeController = require('../controllers/MeasurementTypeController');
+const MeasurementTypeController = require('./MeasurementTypeController');
 
-class PoroPressureController {
+class PressureController {
 
     static async getLastMesurementByDeviceIdAsync(deviceId, measurementTypeId) {
         return await iotData.findOne({deviceId: deviceId, measurementTypeId: measurementTypeId}).sort({timestamp: 'desc'}).limit(1).select({
@@ -59,4 +59,4 @@ class PoroPressureController {
     }
 }
 
-module.exports = PoroPressureController;
+module.exports = PressureController;

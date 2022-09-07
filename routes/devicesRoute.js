@@ -15,7 +15,7 @@ router
     .put('/devices', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceAsync(req, res, next) })
     .put('/devices/UpdateDeviceCalibrationCurves', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceCalibrationCurvesAsync(req, res, next) })
     .put('/devices/:deviceId', middlewaresAuthetication.bearer, (req, res, next) => { updateDeviceStatusAsync(req, res, next) })
-    .get('/getDeviceMeasurementTypes', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceMeasurementTypes(req, res, next) });
+    .get('/devices/getDeviceMeasurementTypes', middlewaresAuthetication.bearer, (req, res, next) => { getDeviceMeasurementTypes(req, res, next) });
 
 
 async function saveNewDeviceAsync(req, res, next) {

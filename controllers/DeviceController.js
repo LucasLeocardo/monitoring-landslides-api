@@ -7,7 +7,7 @@ class DeviceController {
     static async createDeviceAsync(deviceName, deviceLatitude, deviceLongitude, userId, deviceMeasuredDataTypes) {
         const measuredDataTypes = deviceMeasuredDataTypes.map(deviceMeasuredDataType => {
             return {
-                measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType._id),
+                measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType.measurementTypeId),
                 measurementType: deviceMeasuredDataType.measurementType,
                 measuredData: deviceMeasuredDataType.measuredData,
                 unit: deviceMeasuredDataType.unit,
@@ -61,11 +61,11 @@ class DeviceController {
     static async updateDeviceAsync (deviceId, deviceName, deviceLatitude, deviceLongitude, deviceMeasuredDataTypes) {
         const measuredDataTypes = deviceMeasuredDataTypes.map(deviceMeasuredDataType => {
             return {
-                measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType._id),
-                measurementType: deviceMeasuredDataType.name,
+                measurementTypeId: mongoose.Types.ObjectId(deviceMeasuredDataType.measurementTypeId),
+                measurementType: deviceMeasuredDataType.measurementType,
                 unit: deviceMeasuredDataType.unit,
-                gain: deviceMeasuredDataType.gain ? Number(deviceMeasuredDataType.gain) : 1,
-                offSet: deviceMeasuredDataType.offSet ? Number(deviceMeasuredDataType.offSet) : 0
+                measuredData: deviceMeasuredDataType.measuredData,
+                calibrationCurve: deviceMeasuredDataType.calibrationCurve
             };
         });
         return await device.updateOne({_id: deviceId}, {name: deviceName, latitude: deviceLatitude, longitude: deviceLongitude, measuredDataTypes});
@@ -81,7 +81,13 @@ class DeviceController {
 
     static async getDeviceMeasurementTypesAsync (id) {
         const { measuredDataTypes } = await device.findOne({_id: id}, {creatorUserId: false, created_at: false, _id: false, isActive: false, __v: false, name: false, latitude: false, longitude: false});
-        return measuredDataTypes.map(deviceMeasuredDataType => deviceMeasuredDataType.measurementType);
+        return measuredDataTypes.map(deviceMeasuredDataType => {
+            return {
+                measurementType: deviceMeasuredDataType.measurementType,
+                measuredData: deviceMeasuredDataType.measuredData,
+                unit: deviceMeasuredDataType.unit
+            };
+        });
     }
 
     static async getDeviceMeasurementDataTypesAsync (id) {
