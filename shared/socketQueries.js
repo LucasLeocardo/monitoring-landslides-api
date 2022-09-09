@@ -31,6 +31,13 @@ module.exports = async (io, socket) => {
                 }
                 lastLinearAccelerationDataId = lastLinearAccelerationData._id.toString();
             }
+            else {
+                if (lastLinearAccelerationDataId !== "-1") {
+                    const value = {noData: true};
+                    socket.volatile.emit("linear-acceleration-data", value);
+                    lastLinearAccelerationDataId = "-1";
+                }
+            }
         }, 1000);
         dataIntervalList.push(senderLinearAccelerationDataInterval);
     }
@@ -44,6 +51,13 @@ module.exports = async (io, socket) => {
                     socket.volatile.emit("angular-velocity-data", lastAngularVelocityData.value);
                 }
                 lastAngularVelocityDataId = lastAngularVelocityData._id.toString();
+            }
+            else {
+                if (lastAngularVelocityDataId !== "-1") {
+                    const value = {noData: true};
+                    socket.volatile.emit("angular-velocity-data", value);
+                    lastAngularVelocityDataId = "-1";
+                }
             }
         }, 1000);
         dataIntervalList.push(senderAngularVelocityDataInterval);
@@ -59,6 +73,13 @@ module.exports = async (io, socket) => {
                 }
                 lastTemperatureDataId = lastTemperatureData._id.toString();
             }
+            else {
+                if (lastTemperatureDataId !== "-1") {
+                    const value = {noData: true};
+                    socket.volatile.emit("temperature-data", value);
+                    lastTemperatureDataId = "-1";
+                }
+            }
         }, 1000);
         dataIntervalList.push(senderTemperatureDataInterval);
     }
@@ -72,6 +93,13 @@ module.exports = async (io, socket) => {
                     socket.volatile.emit("humidity-data", lastHumidityData.value);
                 }
                 lastHumidityDataId = lastHumidityData._id.toString();
+            }
+            else {
+                if (lastHumidityDataId !== "-1") {
+                    const value = {noData: true};
+                    socket.volatile.emit("humidity-data", value);
+                    lastHumidityDataId = "-1";
+                }
             }
         }, 1000);
         dataIntervalList.push(senderHumidityDataInterval);
@@ -87,6 +115,13 @@ module.exports = async (io, socket) => {
                 }
                 lastRainfallLevelDataId = lastRainFallLevelData._id.toString();
             }
+            else {
+                if (lastRainfallLevelDataId !== "-1") {
+                    const value = {noData: true};
+                    socket.volatile.emit("rainfall-level-data", value);
+                    lastRainfallLevelDataId = "-1";
+                }
+            }
         }, 1000);
         dataIntervalList.push(senderRainFallLevelDataInterval);
     }
@@ -100,6 +135,13 @@ module.exports = async (io, socket) => {
                     socket.volatile.emit("pressure-data", lastPressureData.value);
                 }
                 lastPressureDataId = lastPressureData._id.toString();
+            }
+            else {
+                if (lastPressureDataId !== "-1") {
+                    const value = {noData: true};
+                    socket.volatile.emit("pressure-data", value);
+                    lastPressureDataId = "-1";
+                }
             }
         }, 1000);
         dataIntervalList.push(senderPressureDataInterval);
