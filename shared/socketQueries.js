@@ -38,7 +38,7 @@ module.exports = async (io, socket) => {
                     lastLinearAccelerationDataId = "-1";
                 }
             }
-        }, 1000);
+        }, 3000);
         dataIntervalList.push(senderLinearAccelerationDataInterval);
     }
 
@@ -59,7 +59,7 @@ module.exports = async (io, socket) => {
                     lastAngularVelocityDataId = "-1";
                 }
             }
-        }, 1000);
+        }, 3000);
         dataIntervalList.push(senderAngularVelocityDataInterval);
     }
 
@@ -80,7 +80,7 @@ module.exports = async (io, socket) => {
                     lastTemperatureDataId = "-1";
                 }
             }
-        }, 1000);
+        }, 3000);
         dataIntervalList.push(senderTemperatureDataInterval);
     }
 
@@ -101,7 +101,7 @@ module.exports = async (io, socket) => {
                     lastHumidityDataId = "-1";
                 }
             }
-        }, 1000);
+        }, 3000);
         dataIntervalList.push(senderHumidityDataInterval);
     }
 
@@ -122,7 +122,7 @@ module.exports = async (io, socket) => {
                     lastRainfallLevelDataId = "-1";
                 }
             }
-        }, 1000);
+        }, 3000);
         dataIntervalList.push(senderRainFallLevelDataInterval);
     }
 
@@ -143,7 +143,7 @@ module.exports = async (io, socket) => {
                     lastPressureDataId = "-1";
                 }
             }
-        }, 1000);
+        }, 3000);
         dataIntervalList.push(senderPressureDataInterval);
     }
 
