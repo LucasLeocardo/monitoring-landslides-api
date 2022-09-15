@@ -49,7 +49,7 @@ app.use((error, req, res, next) => {
 
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, { cors: { origin: FRONT_URL } });
+const io = new Server(httpServer, { cors: { origin: [ FRONT_URL, FRONT_TLS_URL ] } });
 
 io.use( async (socket, next) => {
     try {
