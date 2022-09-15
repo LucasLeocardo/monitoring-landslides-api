@@ -16,11 +16,11 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const API_PORT = process.env.PORT;
 const FRONT_URL = process.env.FRONT_URL;
-const TLS_FRONT_URL = process.env.TLS_FRONT_URL;
+const FRONT_TLS_URL = process.env.FRONT_TLS_URL;
 
 app.use(function (req, res, next) {
 
-    var allowedDomains = [ FRONT_URL, TLS_FRONT_URL ];
+    var allowedDomains = [ FRONT_URL, FRONT_TLS_URL ];
     var origin = req.headers.origin;
     if(allowedDomains.indexOf(origin) > -1){
       res.setHeader('Access-Control-Allow-Origin', origin);
