@@ -4,7 +4,6 @@ const routes = require('./routes');
 const InvalidField = require('./errorTreatment/InvalidField');
 const InvalidArgumentError = require('./errorTreatment/InvalidArgumentError');
 const localStrategy = require('./shared/authentication-strategies');
-var cors = require('cors');
 require('dotenv').config();
 require('./redis/black-list');
 const { createServer } = require("http");
@@ -17,8 +16,23 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const API_PORT = process.env.PORT;
 const FRONT_URL = process.env.FRONT_URL;
-const corsOptions = { exposedHeaders: 'Authorization', origin: FRONT_URL };
-app.use(cors(corsOptions));
+const TLS_FRONT_URL = process.env.TLS_FRONT_URL;
+
+app.use(function (req, res, next) {
+
+    var allowedDomains = [ FRONT_URL, TLS_FRONT_URL ];
+    var origin = req.headers.origin;
+    if(allowedDomains.indexOf(origin) > -1){
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+  
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'authorization,content-type');
+    res.setHeader('Access-Control-Expose-Headers', 'Authorization');
+  
+    next();
+});
+
 app.use(localStrategy.initialize());
 routes(app);
 
