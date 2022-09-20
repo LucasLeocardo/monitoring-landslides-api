@@ -11,7 +11,7 @@ class HumidityController {
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
-                    _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                    _id : { $dateToString: { format: "%Y-%m-%d", date: "$timestamp", timezone: "America/Sao_Paulo" } },
                     avgValue: {
                         $avg: "$value.humidity"
                     }
@@ -34,7 +34,7 @@ class HumidityController {
             [
                 {  $match: { deviceId:  mongoose.Types.ObjectId(deviceId) , timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) }, measurementTypeId: mongoose.Types.ObjectId(measurementTypeId) } },
                 {  $group: { 
-                    _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp" } },
+                    _id : { $dateToString: { format: "%Y-%m-%dT%H", date: "$timestamp", timezone: "America/Sao_Paulo" } },
                     avgValue: {
                         $avg: "$value.humidity"
                     }
