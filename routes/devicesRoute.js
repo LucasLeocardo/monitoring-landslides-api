@@ -64,7 +64,7 @@ async function getAllDevicesAsync(req, res, next) {
 
 async function getActiveDevicesAsync(req, res, next) {
     try {
-        const devices = await DeviceController.getActiveDevicesAsync(req.user);
+        const devices = await DeviceController.getActiveDevicesAsync();
         return res.status(200).json(devices);
     }
     catch (error) {

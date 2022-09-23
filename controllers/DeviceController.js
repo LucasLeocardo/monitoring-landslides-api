@@ -44,13 +44,8 @@ class DeviceController {
         }
     }
 
-    static async getActiveDevicesAsync (user) {
-        if (user.isAdmin) {
-            return await device.find({isActive: true});   
-        }
-        else {
-            return await device.find({creatorUserId: user._id, isActive: true});
-        }
+    static async getActiveDevicesAsync () {
+        return await device.find({isActive: true});  
     }
 
     static async deleteDevicesAsync (deviceIds) {
