@@ -1,19 +1,28 @@
 require('dotenv').config();
-const redis = require('redis');
-const createRedisClient = process.env.REDIS_URL || process.env.REDIS_TLS_URL ? createHerokuRedisClient : createLocalRedisClient; 
+//const redis = require('redis');
+const redis = require("ioredis");
+const createRedisClient = process.env.REDIS_URL ? createHerokuRedisClient : createLocalRedisClient; 
 
 module.exports = createRedisClient(redis);
 
 
+// function createHerokuRedisClient(redis) {
+//     const redisUrlObj = new URL(process.env.REDIS_URL);
+//     const redisClient = redis.createClient({url: process.env.REDIS_TLS_URL,
+//         socket: {
+//           tls: true,
+//           rejectUnauthorized: false
+//         }, no_ready_check: true, prefix: 'blacklist:'});
+//     //redisClient.auth(redisUrlObj.password);
+//     return redisClient;
+// }
+
 function createHerokuRedisClient(redis) {
-    const redisUrlObj = new URL(process.env.REDIS_URL);
-    const redisClient = redis.createClient({url: process.env.REDIS_TLS_URL,
-        socket: {
-          tls: true,
-          rejectUnauthorized: false
-        }, no_ready_check: true, prefix: 'blacklist:'});
-    //redisClient.auth(redisUrlObj.password);
-    return redisClient;
+    return new redis(process.env.REDIS_URL, {
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
 }
 
 function createLocalRedisClient(redis) {
