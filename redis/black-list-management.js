@@ -15,7 +15,6 @@ module.exports = {
         const tokenHash = createTokenHash(token);
         await setAsync(tokenHash, '');
         blackList.expireat(tokenHash, expirationDate);
-
     },
     containsToken: async token => {
         const tokenHash = createTokenHash(token);
