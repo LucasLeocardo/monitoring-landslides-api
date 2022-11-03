@@ -13,7 +13,9 @@ function createHerokuRedisClient(redis) {
         socket: {
           tls: true,
           rejectUnauthorized: false
-        }
+        }, 
+        no_ready_check: true,
+        prefix: 'blacklist:'
     });
     // return redis.createClient({url: process.env.REDIS_URL,
     //     socket: {
